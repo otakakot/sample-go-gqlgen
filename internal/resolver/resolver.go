@@ -7,11 +7,13 @@ import "github.com/otakakot/sample-go-gqlgen/pkg/graphql/model"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	todo []*model.Todo
+	todos map[string][]*model.Todo
 }
 
 func New() *Resolver {
+	todos := make(map[string][]*model.Todo)
+
 	return &Resolver{
-		todo: []*model.Todo{},
+		todos: todos,
 	}
 }

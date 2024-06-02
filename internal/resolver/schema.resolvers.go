@@ -6,8 +6,8 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
+	"strconv"
 
 	"github.com/otakakot/sample-go-gqlgen/internal/domain"
 	graphql1 "github.com/otakakot/sample-go-gqlgen/pkg/graphql"
@@ -20,8 +20,10 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.CreateTod
 
 	uid := domain.CtxValUserID(ctx)
 
+	todos := r.todos[uid]
+
 	todo := &model.Todo{
-		ID:   fmt.Sprintf("T%d", len(r.todo)+1),
+		ID:   strconv.Itoa(len(todos) + 1),
 		Text: input.Text,
 		Done: false,
 		User: &model.User{
@@ -30,14 +32,20 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.CreateTod
 		},
 	}
 
-	r.todo = append(r.todo, todo)
+	r.todos[uid] = append(todos, todo)
 
 	return todo, nil
 }
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todo, nil
+	uid := domain.CtxValUserID(ctx)
+
+	slog.InfoContext(ctx, "Todos", "uid", uid)
+
+	todos := r.todos[uid]
+
+	return todos, nil
 }
 
 // Mutation returns graphql1.MutationResolver implementation.
