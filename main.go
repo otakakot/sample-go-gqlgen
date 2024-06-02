@@ -58,6 +58,8 @@ func main() {
 	if env != "production" {
 		slog.Info("connect to http://localhost:" + port + "/graphql for GraphQL playground")
 
+		gql.Use(extension.Introspection{})
+
 		hdl.Handle("GET /graphql", playground.Handler("GraphQL playground", "/graphql"))
 	}
 
