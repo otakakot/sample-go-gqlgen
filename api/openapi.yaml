@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: Sample Go gqlgen APP
+  description: |-
+    This is the Sample Go GraphQL documentation.
+  termsOfService: https://localhost:8080
+  contact:
+    email: kotaro.otaka@example.com
+  license:
+    name: MIT
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: GraphQL
+    description: GraphQL
+  - name: Health
+    description: Health
+paths:
+  /graphql:
+    post:
+      tags:
+        - GraphQL
+      summary: GraphQL
+      description: GraphQL
+      operationId: graphql
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+    get:
+      tags:
+        - GraphQL
+      summary: Playground
+      description: Playground
+      operationId: playground
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health
+      description: Health
+      operationId: health
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    ErrorResponseSchema:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
