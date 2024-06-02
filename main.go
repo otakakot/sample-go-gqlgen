@@ -12,8 +12,11 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 
+	"github.com/otakakot/sample-go-gqlgen/internal/cache"
 	"github.com/otakakot/sample-go-gqlgen/internal/log"
 	"github.com/otakakot/sample-go-gqlgen/internal/middleware"
 	"github.com/otakakot/sample-go-gqlgen/internal/resolver"
@@ -34,9 +37,21 @@ func main() {
 
 	hdl := http.NewServeMux()
 
-	gql := handler.NewDefaultServer(graphql.NewExecutableSchema(graphql.Config{Resolvers: &resolver.Resolver{}}))
-
 	hdl.Handle("GET /health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+
+	rsl := resolver.New()
+
+	cfg := graphql.Config{
+		Resolvers: rsl,
+	}
+
+	gql := handler.New(graphql.NewExecutableSchema(cfg))
+
+	gql.AddTransport(transport.POST{})
+
+	gql.Use(extension.AutomaticPersistedQuery{
+		Cache: cache.New(),
+	})
 
 	hdl.Handle("POST /graphql", middleware.Authorize(gql))
 

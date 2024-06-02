@@ -9,3 +9,9 @@ import "github.com/otakakot/sample-go-gqlgen/pkg/graphql/model"
 type Resolver struct {
 	todo []*model.Todo
 }
+
+func New() *Resolver {
+	return &Resolver{
+		todo: []*model.Todo{},
+	}
+}
