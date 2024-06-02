@@ -18,17 +18,20 @@ fmt: ## go format
 .PHONY: mod
 mod: ## go mod tidy & go mod vendor
 	@go mod tidy
+	@go mod vendor
 
 .PHONY: update
 update: ## go modules update
 	@go get -u -t ./...
 	@go mod tidy
+	@go mod vendor
 
 .PHONY: gen
 gen: ## Generate code.
 	@go get github.com/99designs/gqlgen
 	@go generate ./...
 	@go mod tidy
+	@go mod vendor
 
 .PHONY: up
 up: ## docker compose up with air hot reload
