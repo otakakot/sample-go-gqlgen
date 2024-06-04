@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
@@ -20,7 +21,7 @@ import (
 	"github.com/otakakot/sample-go-gqlgen/internal/log"
 	"github.com/otakakot/sample-go-gqlgen/internal/middleware"
 	"github.com/otakakot/sample-go-gqlgen/internal/resolver"
-	"github.com/otakakot/sample-go-gqlgen/pkg/graphql"
+	"github.com/otakakot/sample-go-gqlgen/pkg/gql"
 )
 
 func main() {
@@ -35,37 +36,55 @@ func main() {
 
 	slog.SetDefault(logger)
 
-	hdl := http.NewServeMux()
+	mux := http.NewServeMux()
 
-	hdl.Handle("GET /health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	mux.Handle("GET /health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 
 	rsl := resolver.New()
 
-	cfg := graphql.Config{
+	cfg := gql.Config{
 		Resolvers: rsl,
 	}
 
-	gql := handler.New(graphql.NewExecutableSchema(cfg))
+	hdl := handler.New(gql.NewExecutableSchema(cfg))
 
-	gql.AddTransport(transport.POST{})
+	hdl.AddTransport(transport.POST{})
 
-	gql.Use(extension.AutomaticPersistedQuery{
+	hdl.Use(extension.AutomaticPersistedQuery{
 		Cache: cache.New(),
 	})
 
-	hdl.Handle("POST /graphql", middleware.Authorize(gql))
+	hdl.Use(extension.FixedComplexityLimit(5))
+
+	hdl.AroundOperations(func(ctx context.Context, next graphql.OperationHandler) graphql.ResponseHandler {
+		return next(ctx)
+	})
+
+	hdl.AroundResponses(func(ctx context.Context, next graphql.ResponseHandler) *graphql.Response {
+		return next(ctx)
+	})
+
+	hdl.AroundRootFields(func(ctx context.Context, next graphql.RootResolver) graphql.Marshaler {
+		return next(ctx)
+	})
+
+	hdl.AroundFields(func(ctx context.Context, next graphql.Resolver) (interface{}, error) {
+		return next(ctx)
+	})
+
+	mux.Handle("POST /graphql", middleware.Authorize(hdl))
 
 	if env != "production" {
 		slog.Info("connect to http://localhost:" + port + "/graphql for GraphQL playground")
 
-		gql.Use(extension.Introspection{})
+		hdl.Use(extension.Introspection{})
 
-		hdl.Handle("GET /graphql", playground.Handler("GraphQL playground", "/graphql"))
+		mux.Handle("GET /graphql", playground.Handler("GraphQL playground", "/graphql"))
 	}
 
 	srv := &http.Server{
 		Addr:              ":" + port,
-		Handler:           hdl,
+		Handler:           mux,
 		ReadHeaderTimeout: 30 * time.Second,
 	}
 

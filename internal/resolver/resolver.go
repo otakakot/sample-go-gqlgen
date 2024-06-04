@@ -1,6 +1,6 @@
 package resolver
 
-import "github.com/otakakot/sample-go-gqlgen/pkg/graphql/model"
+import "github.com/otakakot/sample-go-gqlgen/pkg/gql/model"
 
 // This file will not be regenerated automatically.
 //
