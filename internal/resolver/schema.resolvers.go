@@ -10,8 +10,8 @@ import (
 	"strconv"
 
 	"github.com/otakakot/sample-go-gqlgen/internal/domain"
-	graphql1 "github.com/otakakot/sample-go-gqlgen/pkg/graphql"
-	"github.com/otakakot/sample-go-gqlgen/pkg/graphql/model"
+	graphql1 "github.com/otakakot/sample-go-gqlgen/pkg/gql"
+	"github.com/otakakot/sample-go-gqlgen/pkg/gql/model"
 )
 
 // CreateTodo is the resolver for the createTodo field.
