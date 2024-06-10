@@ -1,4 +1,4 @@
-# github.com/99designs/gqlgen v0.17.47
+# github.com/99designs/gqlgen v0.17.48
 ## explicit; go 1.20
 github.com/99designs/gqlgen/complexity
 github.com/99designs/gqlgen/graphql
