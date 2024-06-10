@@ -3,7 +3,7 @@ module github.com/otakakot/sample-go-gqlgen
 go 1.22.3
 
 require (
-	github.com/99designs/gqlgen v0.17.47
+	github.com/99designs/gqlgen v0.17.48
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/vektah/gqlparser/v2 v2.5.12
 )
