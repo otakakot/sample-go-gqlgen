@@ -1,5 +1,5 @@
-# github.com/99designs/gqlgen v0.17.49
-## explicit; go 1.20
+# github.com/99designs/gqlgen v0.17.55
+## explicit; go 1.22.5
 github.com/99designs/gqlgen/complexity
 github.com/99designs/gqlgen/graphql
 github.com/99designs/gqlgen/graphql/errcode
@@ -31,7 +31,7 @@ github.com/mitchellh/mapstructure
 # github.com/sosodev/duration v1.3.1
 ## explicit; go 1.17
 github.com/sosodev/duration
-# github.com/vektah/gqlparser/v2 v2.5.16
+# github.com/vektah/gqlparser/v2 v2.5.17
 ## explicit; go 1.19
 github.com/vektah/gqlparser/v2
 github.com/vektah/gqlparser/v2/ast
@@ -40,7 +40,7 @@ github.com/vektah/gqlparser/v2/lexer
 github.com/vektah/gqlparser/v2/parser
 github.com/vektah/gqlparser/v2/validator
 github.com/vektah/gqlparser/v2/validator/rules
-# golang.org/x/net v0.26.0
+# golang.org/x/net v0.29.0
 ## explicit; go 1.18
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
