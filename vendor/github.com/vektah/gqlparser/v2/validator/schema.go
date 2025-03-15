@@ -86,7 +86,7 @@ func ValidateSchemaDocument(sd *SchemaDocument) (*Schema, error) {
 			// scalars, it may (§3.13) define builtin directives. Here we check for
 			// that, and reject doubly-defined directives otherwise.
 			switch dir.Name {
-			case "include", "skip", "deprecated", "specifiedBy", "defer": // the builtins
+			case "include", "skip", "deprecated", "specifiedBy", "defer", "oneOf": // the builtins
 				// In principle here we might want to validate that the
 				// directives are the same. But they might not be, if the
 				// server has an older spec than we do. (Plus, validating this
@@ -122,6 +122,10 @@ func ValidateSchemaDocument(sd *SchemaDocument) (*Schema, error) {
 				schema.Subscription = def
 			}
 		}
+		if err := validateDirectives(&schema, sd.Schema[0].Directives, LocationSchema, nil); err != nil {
+			return nil, err
+		}
+		schema.SchemaDirectives = append(schema.SchemaDirectives, sd.Schema[0].Directives...)
 	}
 
 	for _, ext := range sd.SchemaExtension {
@@ -139,6 +143,10 @@ func ValidateSchemaDocument(sd *SchemaDocument) (*Schema, error) {
 				schema.Subscription = def
 			}
 		}
+		if err := validateDirectives(&schema, ext.Directives, LocationSchema, nil); err != nil {
+			return nil, err
+		}
+		schema.SchemaDirectives = append(schema.SchemaDirectives, ext.Directives...)
 	}
 
 	if err := validateTypeDefinitions(&schema); err != nil {
